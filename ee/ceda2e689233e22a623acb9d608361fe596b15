@@ -1,0 +1,23 @@
+tnc-analysis/src/matching.rs
+  eb32b2b083a3a578 15-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "eeceda2e689233e22a623acb9d608361fe596b15",
+  "prompts": {
+    "eb32b2b083a3a578": {
+      "agent_id": {
+        "tool": "mock_ai",
+        "id": "ai-thread-1777995716940558265",
+        "model": "unknown"
+      },
+      "human_author": "Edmund Cape",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 1,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    }
+  }
+}
