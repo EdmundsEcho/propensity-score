@@ -1,0 +1,19 @@
+README.md
+  s_382730726e0cc1::t_e7a9f953a1fd56 30,33-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "75f218094c005b024eeb61c6af555cd1f132c0c6",
+  "prompts": {},
+  "sessions": {
+    "s_382730726e0cc1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "14918d53-6d0e-41c3-b99d-e4291440d563",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Edmund Cape <edmund.cape@gmail.com>"
+    }
+  }
+}
