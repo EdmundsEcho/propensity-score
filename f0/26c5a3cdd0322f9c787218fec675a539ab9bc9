@@ -1,0 +1,23 @@
+README.md
+  s_382730726e0cc1::t_f7ad81e02372a2 32
+src/logistic.rs
+  s_382730726e0cc1::t_bed6c6f65a6a5d 15-17,21-23
+src/lib.rs
+  s_382730726e0cc1::t_77410ce936b5cd 1-2,8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "f026c5a3cdd0322f9c787218fec675a539ab9bc9",
+  "prompts": {},
+  "sessions": {
+    "s_382730726e0cc1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "14918d53-6d0e-41c3-b99d-e4291440d563",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Edmund Cape <edmund.cape@gmail.com>"
+    }
+  }
+}
