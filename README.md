@@ -40,19 +40,30 @@ nalgebra = "0.33"
 use nalgebra::{DMatrix, DVector};
 use propensity_score::{fit, BinConfig, BinStrategy, Config};
 
-// 6 subjects, 1 feature (the +/- pattern is clearly separable here).
-let features = DMatrix::from_row_slice(6, 1, &[
-    3.0, 2.0, 1.0,
-   -1.0, -2.0, -3.0,
+// 6 subjects, 4 features: [sex_M, state_CA, state_TX, age_z]
+//   - sex_M  : 1 = male,  0 = female  (single 0/1 indicator)
+//   - state  : one-hot with NY as the reference. Both CA and TX flags
+//              0 → state = NY.
+//   - age_z  : age in years, z-scored. Logistic regression with raw
+//              magnitudes alongside 0/1 indicators is numerically awkward.
+let features = DMatrix::from_row_slice(6, 4, &[
+    0.0, 1.0, 0.0,  1.1,   // F, CA, older
+    1.0, 1.0, 0.0,  0.5,   // M, CA, older
+    0.0, 0.0, 0.0,  0.2,   // F, NY, mid
+    1.0, 0.0, 0.0, -0.4,   // M, NY, younger
+    0.0, 0.0, 1.0, -1.0,   // F, TX, young
+    1.0, 0.0, 0.0, -1.5,   // M, NY, youngest
 ]);
-let target = DVector::from_vec(vec![1.0, 1.0, 1.0, 0.0, 0.0, 0.0]);
+// 1 = received the marketing campaign, 0 = did not.
+let target = DVector::from_vec(vec![1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
 
 let findings = fit(&features, &target, &Config::default())?;
-let scores = findings.predict(&features);
+let scores   = findings.predict(&features);
 
 println!("AUC = {:.3}", findings.auc(&scores, &target));
 
-// Decile binning (quantile, count = 10).
+// Decile binning (quantile, count = 10). Subjects with similar scores
+// end up in the same bin → use for stratified matching downstream.
 let bins = findings.bin(
     &scores,
     &BinConfig { count: 10, strategy: BinStrategy::Quantile },
@@ -61,7 +72,33 @@ println!("Decile per subject: {:?}", bins);
 # Ok::<(), Box<dyn std::error::Error>>(())
 ```
 
-See `examples/basic.rs` for a runnable version (`cargo run --example basic`).
+A fuller 15-subject version lives in `examples/basic.rs` — run it with
+`cargo run --example basic` to see fitted weights, per-subject scores,
+AUC, and quintile bins.
+
+## What AUC tells you
+
+`Findings::auc(&scores, &target)` returns the area under the ROC curve, a
+single number in `[0, 1]`. The probabilistic reading is the most intuitive:
+
+> **AUC is the probability that a randomly chosen *treated* subject gets a
+> higher propensity score than a randomly chosen *untreated* subject.**
+
+For propensity scoring there's a sweet spot:
+
+- **~0.5** — features carry no information about treatment assignment.
+  Treated and untreated subjects are indistinguishable. Propensity matching
+  is unnecessary; the groups are already comparable.
+- **~0.6–0.85** — features predict treatment meaningfully (there's
+  confounding worth correcting), but treated and untreated still overlap in
+  feature space (you can find matches). **This is the useful range.**
+- **≳ 0.95** — features predict treatment almost perfectly. The treated and
+  untreated populations don't overlap; matching will fail or pair subjects
+  that aren't really comparable. Reconsider the feature set, drop the most
+  predictive ones, or rethink the matching design.
+
+Treat AUC as a diagnostic, not a goal — high AUC on its own isn't a win
+for matching.
 
 ## Zero-aware binning
 
@@ -81,9 +118,11 @@ If you don't want the zero handling, use `BinStrategy::EqualRange` instead.
 
 - Not a full ML library — no L1/L2 regularization, no multinomial, no
   cross-validation helpers. If you need those, look at `linfa-logistic`.
-- Not the fastest solver for huge datasets — gradient descent with adaptive
-  learning rate. Fine for thousands to ~hundreds of thousands of rows; for
-  millions you'll want IRLS or L-BFGS.
+- Not benchmarked at scale. The solver is straight gradient descent with
+  adaptive convergence on cost-delta. For very large datasets, IRLS or
+  L-BFGS-based solvers may converge in fewer iterations — but we haven't
+  measured the crossover point. If you push it through millions of rows
+  and see a problem, please open an issue.
 - Not a matching engine — just the propensity-score input to one. The matching
   itself (caliper, 1:1, nearest neighbor, etc.) is downstream of this crate.
 
