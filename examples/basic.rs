@@ -45,8 +45,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Z-score age before fitting. Without this the solver lurches because
     // age (~30-70) dwarfs the 0/1 indicators in gradient magnitude.
     let age_mean = rows.iter().map(|r| r.3).sum::<f64>() / n as f64;
-    let age_sd = (rows.iter().map(|r| (r.3 - age_mean).powi(2)).sum::<f64>()
-        / n as f64)
+    let age_sd = (rows.iter().map(|r| (r.3 - age_mean).powi(2)).sum::<f64>() / n as f64)
         .sqrt()
         .max(1e-9);
 
@@ -84,9 +83,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let sex = if r.0 > 0.5 { "M" } else { "F" };
         println!(
             "  #{i:>2}: {sex} {state} age {:>2}  →  score = {:.3}  (treatment = {})",
-            r.3 as i32,
-            scores[i],
-            r.4 as i32,
+            r.3 as i32, scores[i], r.4 as i32,
         );
     }
 

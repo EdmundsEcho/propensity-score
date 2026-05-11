@@ -306,10 +306,14 @@ mod tests {
 
     #[test]
     fn test_fit_separable_data() {
-        let features = DMatrix::from_row_slice(6, 1, &[
-            3.0, 2.0, 1.0,  // class 1
-            -1.0, -2.0, -3.0, // class 0
-        ]);
+        let features = DMatrix::from_row_slice(
+            6,
+            1,
+            &[
+                3.0, 2.0, 1.0, // class 1
+                -1.0, -2.0, -3.0, // class 0
+            ],
+        );
         let target = DVector::from_vec(vec![1.0, 1.0, 1.0, 0.0, 0.0, 0.0]);
 
         let config = Config::default();
@@ -327,12 +331,7 @@ mod tests {
 
     #[test]
     fn test_fit_two_features() {
-        let features = DMatrix::from_row_slice(4, 2, &[
-            1.0, 1.0,
-            1.0, -1.0,
-            -1.0, 1.0,
-            -1.0, -1.0,
-        ]);
+        let features = DMatrix::from_row_slice(4, 2, &[1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0]);
         let target = DVector::from_vec(vec![1.0, 1.0, 0.0, 0.0]);
 
         let config = Config::default();
@@ -345,9 +344,7 @@ mod tests {
 
     #[test]
     fn test_predict_and_bin() {
-        let features = DMatrix::from_row_slice(6, 1, &[
-            3.0, 2.0, 1.0, -1.0, -2.0, -3.0,
-        ]);
+        let features = DMatrix::from_row_slice(6, 1, &[3.0, 2.0, 1.0, -1.0, -2.0, -3.0]);
         let target = DVector::from_vec(vec![1.0, 1.0, 1.0, 0.0, 0.0, 0.0]);
 
         let config = Config::default();

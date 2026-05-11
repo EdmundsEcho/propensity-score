@@ -59,20 +59,13 @@ fn bin_quantile(scores: &DVector<f64>, count: u32) -> Vec<u32> {
     }
 
     // Sort indices by score ascending
-    let mut indexed: Vec<(usize, f64)> = scores
-        .iter()
-        .copied()
-        .enumerate()
-        .collect();
+    let mut indexed: Vec<(usize, f64)> = scores.iter().copied().enumerate().collect();
     indexed.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal));
 
     let mut bins = vec![0u32; n];
 
     // Separate zeros from non-zeros
-    let non_zero_start = indexed
-        .iter()
-        .position(|(_, v)| *v > 0.0)
-        .unwrap_or(n);
+    let non_zero_start = indexed.iter().position(|(_, v)| *v > 0.0).unwrap_or(n);
 
     // Zeros get bin 0
     for i in 0..non_zero_start {
@@ -104,7 +97,10 @@ mod tests {
     #[test]
     fn test_equal_range_basic() {
         let scores = DVector::from_vec(vec![0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0]);
-        let config = BinConfig { count: 5, strategy: BinStrategy::EqualRange };
+        let config = BinConfig {
+            count: 5,
+            strategy: BinStrategy::EqualRange,
+        };
         let bins = bin_scores(&scores, &config);
         assert_eq!(bins[0], 0); // 0.0 → bin 0
         assert_eq!(bins[1], 1); // 0.1 → bin 1
@@ -120,10 +116,13 @@ mod tests {
     fn test_quantile_equal_distribution() {
         // 10 subjects, 5 bins → 2 per bin
         let scores = DVector::from_vec(vec![0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]);
-        let config = BinConfig { count: 5, strategy: BinStrategy::Quantile };
+        let config = BinConfig {
+            count: 5,
+            strategy: BinStrategy::Quantile,
+        };
         let bins = bin_scores(&scores, &config);
 
-        let mut counts = vec![0u32; 6];
+        let mut counts = [0u32; 6];
         for &b in &bins {
             counts[b as usize] += 1;
         }
@@ -136,7 +135,10 @@ mod tests {
     fn test_quantile_with_zeros() {
         // 3 zeros + 6 non-zeros, 3 bins → 2 non-zero per bin
         let scores = DVector::from_vec(vec![0.0, 0.0, 0.0, 0.1, 0.2, 0.5, 0.7, 0.8, 0.9]);
-        let config = BinConfig { count: 3, strategy: BinStrategy::Quantile };
+        let config = BinConfig {
+            count: 3,
+            strategy: BinStrategy::Quantile,
+        };
         let bins = bin_scores(&scores, &config);
 
         assert_eq!(bins[0], 0);
@@ -144,7 +146,7 @@ mod tests {
         assert_eq!(bins[2], 0);
 
         let non_zero_bins: Vec<u32> = bins[3..].to_vec();
-        let mut counts = vec![0u32; 4];
+        let mut counts = [0u32; 4];
         for &b in &non_zero_bins {
             counts[b as usize] += 1;
         }
@@ -160,26 +162,40 @@ mod tests {
         let scores = DVector::from_vec(vec![
             0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19,
         ]);
-        let config = BinConfig { count: 5, strategy: BinStrategy::Quantile };
+        let config = BinConfig {
+            count: 5,
+            strategy: BinStrategy::Quantile,
+        };
         let bins = bin_scores(&scores, &config);
 
         let unique_bins: std::collections::HashSet<u32> = bins.iter().copied().collect();
-        assert_eq!(unique_bins.len(), 5, "should use all 5 bins: {:?}", unique_bins);
+        assert_eq!(
+            unique_bins.len(),
+            5,
+            "should use all 5 bins: {:?}",
+            unique_bins
+        );
     }
 
     #[test]
     fn test_quantile_as_decile() {
         // Quantile with count=10 is a decile
         let scores = DVector::from_vec((1..=100).map(|i| i as f64 / 100.0).collect());
-        let config = BinConfig { count: 10, strategy: BinStrategy::Quantile };
+        let config = BinConfig {
+            count: 10,
+            strategy: BinStrategy::Quantile,
+        };
         let bins = bin_scores(&scores, &config);
 
-        let mut counts = vec![0u32; 11];
+        let mut counts = [0u32; 11];
         for &b in &bins {
             counts[b as usize] += 1;
         }
         for bin in 1..=10u32 {
-            assert_eq!(counts[bin as usize], 10, "decile bin {bin} should have 10 subjects");
+            assert_eq!(
+                counts[bin as usize], 10,
+                "decile bin {bin} should have 10 subjects"
+            );
         }
     }
 
@@ -187,7 +203,10 @@ mod tests {
     fn test_quantile_preserves_order() {
         // Higher score → higher bin
         let scores = DVector::from_vec(vec![0.9, 0.1, 0.5, 0.3, 0.7]);
-        let config = BinConfig { count: 5, strategy: BinStrategy::Quantile };
+        let config = BinConfig {
+            count: 5,
+            strategy: BinStrategy::Quantile,
+        };
         let bins = bin_scores(&scores, &config);
 
         assert!(bins[0] > bins[1], "0.9 should be in higher bin than 0.1");
@@ -197,7 +216,10 @@ mod tests {
     #[test]
     fn test_empty_scores() {
         let scores = DVector::from_vec(vec![]);
-        let config = BinConfig { count: 5, strategy: BinStrategy::Quantile };
+        let config = BinConfig {
+            count: 5,
+            strategy: BinStrategy::Quantile,
+        };
         let bins = bin_scores(&scores, &config);
         assert!(bins.is_empty());
     }
