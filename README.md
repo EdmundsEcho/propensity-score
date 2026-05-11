@@ -61,12 +61,12 @@ let features = DMatrix::from_row_slice(6, 4, &[
     1.0, 0.0, 0.0, -1.5,   // M, NY, youngest
 ]);
 // 1 = received the marketing campaign, 0 = did not.
-let target = DVector::from_vec(vec![1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
+let treatment = DVector::from_vec(vec![1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
 
-let findings = fit(&features, &target, &Config::default())?;
+let findings = fit(&features, &treatment, &Config::default())?;
 let scores   = findings.predict(&features);
 
-println!("AUC = {:.3}", findings.auc(&scores, &target));
+println!("AUC = {:.3}", findings.auc(&scores, &treatment));
 
 // Decile binning (quantile, count = 10). Subjects with similar scores
 // end up in the same bin → use for stratified matching downstream.
@@ -84,7 +84,7 @@ AUC, and quintile bins.
 
 ## What AUC tells you
 
-`Findings::auc(&scores, &target)` returns the area under the ROC curve, a
+`Findings::auc(&scores, &treatment)` returns the area under the ROC curve, a
 single number in `[0, 1]`. The probabilistic reading is the most intuitive:
 
 > **AUC is the probability that a randomly chosen *treated* subject gets a

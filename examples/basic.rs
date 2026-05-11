@@ -51,16 +51,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .max(1e-9);
 
     let mut features = DMatrix::zeros(n, 4);
-    let mut target = DVector::zeros(n);
+    let mut treatment = DVector::zeros(n);
     for (i, r) in rows.iter().enumerate() {
         features[(i, 0)] = r.0; // sex_M
         features[(i, 1)] = r.1; // state_CA
         features[(i, 2)] = r.2; // state_TX
         features[(i, 3)] = (r.3 - age_mean) / age_sd; // age_z
-        target[i] = r.4;
+        treatment[i] = r.4;
     }
 
-    let findings = fit(&features, &target, &Config::default())?;
+    let findings = fit(&features, &treatment, &Config::default())?;
     let labels = ["sex_M", "state_CA", "state_TX", "age_z"];
     println!(
         "fit (iterations = {}, cost = {:.4}):",
@@ -83,14 +83,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         };
         let sex = if r.0 > 0.5 { "M" } else { "F" };
         println!(
-            "  #{i:>2}: {sex} {state} age {:>2}  →  score = {:.3}  (target = {})",
+            "  #{i:>2}: {sex} {state} age {:>2}  →  score = {:.3}  (treatment = {})",
             r.3 as i32,
             scores[i],
             r.4 as i32,
         );
     }
 
-    let auc = findings.auc(&scores, &target);
+    let auc = findings.auc(&scores, &treatment);
     println!("\nAUC = {auc:.3}   (0.5 = random, 1.0 = perfect)");
 
     // Quintile bins: subjects with similar scores share a bin. Useful
