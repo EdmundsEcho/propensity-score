@@ -1,0 +1,23 @@
+examples/basic.rs
+  s_382730726e0cc1::t_89b4eb46a066dc 1-2,7-18,24-61,64,66-67,69-72,75-90,94,96-97,105
+README.md
+  s_382730726e0cc1::t_42b5190a8ba134 121-125
+  s_382730726e0cc1::t_561cdd172b0a37 43-55,57-58,61,65-66,75-77
+  s_382730726e0cc1::t_97d552254136c1 79-101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "377f700bc995a2ed182f83d8aec12a0818284547",
+  "prompts": {},
+  "sessions": {
+    "s_382730726e0cc1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "14918d53-6d0e-41c3-b99d-e4291440d563",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Edmund Cape <edmund.cape@gmail.com>"
+    }
+  }
+}
