@@ -12,9 +12,15 @@ use crate::config::{BinConfig, Config};
 /// Error type for propensity score estimation.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
+    /// The optimizer failed to make progress — e.g. weights diverged or
+    /// the cost became non-finite. Usually indicates pathological input
+    /// (very large feature magnitudes, perfectly collinear columns).
     #[error("Optimization failed: {0}")]
     Optimization(String),
 
+    /// The inputs are malformed before optimization even begins —
+    /// empty matrix, dimension mismatch between `features` and `target`,
+    /// or similar shape problems.
     #[error("Invalid input: {0}")]
     InvalidInput(String),
 }

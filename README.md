@@ -29,7 +29,7 @@ this crate gives you:
 
 ## At a glance
 
-```
+```text
 (Features, Treatment)  ──►  Scores ∈ [0, 1] per subject  ──►  Bins (Int per subject)
 ```
 
