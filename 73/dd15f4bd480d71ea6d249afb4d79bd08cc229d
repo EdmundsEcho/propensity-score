@@ -1,0 +1,31 @@
+examples/basic.rs
+  s_382730726e0cc1::t_31f134ae2b8885 1-52
+Cargo.toml
+  s_382730726e0cc1::t_31f134ae2b8885 5-15,18,21,24-25
+LICENSE-APACHE
+  s_382730726e0cc1::t_31f134ae2b8885 1-201
+CHANGELOG.md
+  s_382730726e0cc1::t_31f134ae2b8885 1-22
+.gitignore
+  s_382730726e0cc1::t_600718deb145f1 1-12
+LICENSE-MIT
+  s_382730726e0cc1::t_31f134ae2b8885 1-21
+README.md
+  s_382730726e0cc1::t_31f134ae2b8885 1-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "73dd15f4bd480d71ea6d249afb4d79bd08cc229d",
+  "prompts": {},
+  "sessions": {
+    "s_382730726e0cc1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "14918d53-6d0e-41c3-b99d-e4291440d563",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Edmund Cape <edmund.cape@gmail.com>"
+    }
+  }
+}
