@@ -27,6 +27,25 @@ this crate gives you:
 - One library, three modules (`logistic`, `binning`, `config`), ~650 lines,
   three dependencies (`nalgebra`, `thiserror`, `tracing`).
 
+## API at a glance
+
+```haskell
+-- Pseudo-Haskell. `n` = number of subjects, `p` = number of features.
+
+type Features  = Matrix (n × p) Float    -- rows = subjects, cols = predictors
+type Treatment = Vector n {0, 1}         -- 1 = treated, 0 = control
+type Scores    = Vector n [0, 1]         -- propensity per subject
+type Bins      = Vector n Int            -- 0 = zero-aware bucket; 1..N = quantile / range bins
+
+fit     :: Features -> Treatment -> Config     -> Either Error Findings
+predict :: Findings -> Features                -> Scores
+auc     :: Findings -> Scores    -> Treatment  -> Float              -- AUC in [0, 1]
+bin     :: Findings -> Scores    -> BinConfig  -> Bins
+```
+
+`Findings` carries the fitted weights, intercept, and convergence
+diagnostics. It's the value you reuse across `predict` / `auc` / `bin`.
+
 ## Quick start
 
 ```toml
