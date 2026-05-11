@@ -2,16 +2,27 @@
 name = "propensity-score"
 version = "0.1.0"
 edition = "2021"
-description = "Propensity score estimation via logistic regression"
+rust-version = "1.75"
+
+description = "Propensity score estimation via logistic regression, with zero-aware quantile binning for matching workflows."
+authors = ["Edmund Cape <edmund.cape@gmail.com>"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/EdmundsEcho/propensity-score"
+homepage = "https://github.com/EdmundsEcho/propensity-score"
+documentation = "https://docs.rs/propensity-score"
+readme = "README.md"
+keywords = ["propensity", "logistic", "regression", "matching", "binning"]
+categories = ["science", "algorithms", "mathematics"]
 
 [dependencies]
-# Linear algebra
+# Linear algebra (matrix/vector types only; no SVD/eig needed).
 nalgebra = "0.33"
 
-# Error handling
+# Error type derive.
 thiserror = "2"
 
-# Logging
+# Structured logging — events flow through the standard `tracing` ecosystem
+# (consumers can install any subscriber they like).
 tracing = "0.1"
 
 [dev-dependencies]
